@@ -1,0 +1,13 @@
+{
+    "name": "accounts-signin",
+    "description": "accounts-signin component",
+    "local": [],
+    "scripts": ["index.js"],
+    "styles": ["styles.css"],
+    "templates": ["template.html"],
+    "main": "index.js",
+    "dependencies": {
+        "serandomps/dust": "master",
+        "serandomps/serand": "master"
+    }
+}
