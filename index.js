@@ -2,12 +2,6 @@ var dust = require('dust')();
 var serand = require('serand');
 var utils = require('utils');
 
-var clientId;
-
-var active;
-
-var pending;
-
 dust.loadSource(dust.compile(require('./template'), 'accounts-signin'));
 
 module.exports = function (sandbox, fn, options) {
@@ -20,14 +14,6 @@ module.exports = function (sandbox, fn, options) {
             var el = $('.accounts-signin', sandbox);
             var username = $('.username', el).val();
             var password = $('.password', el).val();
-            if (!clientId) {
-                pending = {
-                    username: username,
-                    password: password,
-                    options: options
-                };
-                return;
-            }
             authenticate(username, password, options);
             return false;
         });
@@ -37,17 +23,7 @@ module.exports = function (sandbox, fn, options) {
     });
 };
 
-utils.boot(function (err, config) {
-    clientId = config.clientId;
-    if (!pending) {
-        return;
-    }
-    authenticate(pending.username, pending.password, pending.options);
-    pending = null;
-});
-
 var authenticate = function (username, password, options) {
-    var passive = !!options.clientId;
     $.ajax({
         method: 'POST',
         url: '/apis/v/tokens',
@@ -55,7 +31,7 @@ var authenticate = function (username, password, options) {
             'x-host': 'accounts.serandives.com'
         },
         data: {
-            client_id: passive ? options.clientId : clientId,
+            client_id: options.clientId,
             grant_type: 'password',
             username: username,
             password: password
@@ -96,13 +72,3 @@ var permissions = function (user, options) {
         }
     });
 };
-
-serand.on('user', 'authenticate', function (username, password) {
-    if (clientId) {
-        return authenticate(username, password);
-    }
-    active = {
-        username: username,
-        password: password
-    };
-});
