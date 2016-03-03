@@ -28,7 +28,7 @@ var authenticate = function (username, password, options) {
         method: 'POST',
         url: '/apis/v/tokens',
         headers: {
-            'x-host': 'accounts.serandives.com'
+            'X-Host': 'accounts.serandives.com'
         },
         data: {
             client_id: options.clientId,
@@ -59,7 +59,7 @@ var permissions = function (user, options) {
         method: 'GET',
         url: '/apis/v/tokens/' + user.tid,
         headers: {
-            'x-host': 'accounts.serandives.com',
+            'X-Host': 'accounts.serandives.com',
             'Authorization': 'Bearer ' + user.access
         },
         dataType: 'json',
