@@ -17,6 +17,11 @@ module.exports = function (sandbox, fn, options) {
             authenticate(username, password, options);
             return false;
         });
+        sandbox.on('click', '.accounts-signin .facebook', function (e) {
+            options.type = 'facebook';
+            serand.emit('user', 'oauth', options);
+            return false;
+        });
         fn(false, function () {
             $('.accounts-signin', sandbox).remove();
         });
@@ -46,26 +51,14 @@ var authenticate = function (username, password, options) {
                 refresh: token.refresh_token,
                 expires: token.expires_in
             };
-            permissions(user, options);
-        },
-        error: function () {
-            serand.emit('user', 'login error');
-        }
-    });
-};
-
-var permissions = function (user, options) {
-    $.ajax({
-        method: 'GET',
-        url: '/apis/v/tokens/' + user.tid,
-        headers: {
-            'X-Host': 'accounts.serandives.com',
-            'Authorization': 'Bearer ' + user.access
-        },
-        dataType: 'json',
-        success: function (token) {
-            user.has = token.has;
-            serand.emit('user', 'logged in', user, options);
+            serand.emit('token', 'info', user.tid, user.access, function (err, token) {
+                if (err) {
+                    serand.emit('user', 'login error');
+                    return;
+                }
+                user.has = token.has;
+                serand.emit('user', 'logged in', user, options);
+            });
         },
         error: function () {
             serand.emit('user', 'login error');
