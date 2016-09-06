@@ -31,7 +31,7 @@ module.exports = function (sandbox, fn, options) {
 var authenticate = function (username, password, options) {
     $.ajax({
         method: 'POST',
-        url: 'https://accounts.serandives.com/apis/v/tokens',
+        url: utils.resolve('accounts://apis/v/tokens'),
         data: {
             client_id: options.clientId,
             grant_type: 'password',
