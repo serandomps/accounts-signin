@@ -4,10 +4,10 @@ var utils = require('utils');
 
 dust.loadSource(dust.compile(require('./template'), 'accounts-signin'));
 
-module.exports = function (sandbox, fn, options) {
+module.exports = function (sandbox, options, done) {
     dust.render('accounts-signin', {}, function (err, out) {
         if (err) {
-            return;
+            return done(err);
         }
         sandbox.append(out);
         sandbox.on('click', '.accounts-signin .signin', function (e) {
@@ -22,7 +22,7 @@ module.exports = function (sandbox, fn, options) {
             serand.emit('user', 'oauth', options);
             return false;
         });
-        fn(false, function () {
+        done(null, function () {
             $('.accounts-signin', sandbox).remove();
         });
     });
@@ -50,15 +50,14 @@ var authenticate = function (username, password, options) {
             };
             serand.emit('token', 'info', user.tid, user.access, function (err, token) {
                 if (err) {
-                    serand.emit('user', 'login error');
-                    return;
+                    return serand.emit('user', 'login error', err);
                 }
                 user.has = token.has;
                 serand.emit('user', 'logged in', user, options);
             });
         },
-        error: function () {
-            serand.emit('user', 'login error');
+        error: function (xhr, status, err) {
+            serand.emit('user', 'login error', err || status || xhr);
         }
     });
 };
