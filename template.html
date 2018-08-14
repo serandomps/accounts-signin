@@ -2,6 +2,12 @@
     <div class="col-md-4"></div>
     <div class="col-md-4">
         <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a class="panel-title" href="{home}">Home</a>
+                    <a class="panel-title pull-right" href="{signup}">Sign up</a>
+                </h3>
+            </div>
             <div class="panel-body">
                 <form role="form">
                     <div class="form-group">
@@ -19,10 +25,13 @@
                             </label>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <div class="captcha" data-size="normal"></div>
+                    </div>
                 </form>
             </div>
             <div class="panel-footer">
-                <button type="submit" class="btn btn-default signin">Sign in</button>
+                <button type="submit" class="btn btn-default signin" disabled="disabled">Sign in</button>
                 <button type="submit" class="btn btn-default facebook pull-right">
                     <i class="fa fa-2x fa-facebook-square" aria-hidden="true"></i>
                 </button>

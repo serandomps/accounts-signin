@@ -9,6 +9,7 @@
     "dependencies": {
         "serandomps/dust": "master",
         "serandomps/serand": "master",
-        "serandomps/utils": "master"
+        "serandomps/utils": "master",
+        "serandomps/captcha": "master"
     }
 }
