@@ -11,7 +11,7 @@ module.exports = function (sandbox, options, done) {
     var suffix = '';
     var append = function (suff) {
         suffix += (suffix ? '&' : '?') + suff;
-    }
+    };
     if (options.clientId) {
         append('client_id=' + options.clientId);
     }
@@ -74,9 +74,10 @@ var authenticate = function (captcha, username, password, options) {
         url: utils.resolve('accounts://apis/v/tokens'),
         data: {
             client_id: options.clientId,
+            redirect_uri: options.location,
             grant_type: 'password',
             username: username,
-            password: password
+            password: password,
         },
         headers: {
             'X-Captcha': captcha
