@@ -10,6 +10,7 @@
         "serandomps/dust": "master",
         "serandomps/serand": "master",
         "serandomps/utils": "master",
+        "serandomps/form": "master",
         "serandomps/captcha": "master"
     }
 }
