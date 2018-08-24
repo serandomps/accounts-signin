@@ -41,7 +41,7 @@ var configs = {
 
 module.exports = function (sandbox, options, done) {
     var home = options.location || '/';
-    var signup = 'accounts://signup';
+    var signup = 'accounts:///signup';
     var suffix = '';
     var append = function (suff) {
         suffix += (suffix ? '&' : '?') + suff;
@@ -130,7 +130,7 @@ module.exports = function (sandbox, options, done) {
 var authenticate = function (captcha, username, password, options) {
     $.ajax({
         method: 'POST',
-        url: utils.resolve('accounts://apis/v/tokens'),
+        url: utils.resolve('accounts:///apis/v/tokens'),
         data: {
             client_id: options.clientId,
             redirect_uri: options.location,
