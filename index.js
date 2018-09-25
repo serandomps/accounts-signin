@@ -39,7 +39,7 @@ var configs = {
     },
 };
 
-module.exports = function (sandbox, options, done) {
+module.exports = function (ctx, sandbox, options, done) {
     var home = options.location || '/';
     var signup = 'accounts:///signup';
     var suffix = '';
@@ -63,7 +63,7 @@ module.exports = function (sandbox, options, done) {
         }
         var elem = sandbox.append(out);
         var lform = form.create(elem, configs);
-        lform.render({}, function (err) {
+        lform.render(ctx, {}, function (err) {
             if (err) {
                 return done(err);
             }
