@@ -6,18 +6,19 @@ var form = require('form');
 
 dust.loadSource(dust.compile(require('./template'), 'accounts-signin'));
 
-
 var configs = {
     username: {
         find: function (context, source, done) {
-            var value = $('input', source).val();
+            done(null, $('input', source).val());
+        },
+        validate: function (context, data, value, done) {
             if (!value) {
                 return done(null, 'Please enter your username');
             }
             if (!is.email(value)) {
                 return done(null, 'Please enter a valid email address');
             }
-            done(null, null, value);
+            done();
         },
         update: function (context, source, error, value, done) {
             $('input', source).val(value);
@@ -26,11 +27,13 @@ var configs = {
     },
     password: {
         find: function (context, source, done) {
-            var value = $('input', source).val();
+            done(null, $('input', source).val());
+        },
+        validate: function (context, data, value, done) {
             if (!value) {
                 return done(null, 'Please enter your password');
             }
-            done(null, null, value);
+            done();
         },
         update: function (context, source, error, value, done) {
             $('input', source).val(value);
@@ -73,28 +76,45 @@ module.exports = function (ctx, sandbox, options, done) {
                     if (err) {
                         return console.error(err);
                     }
-                    if (errors) {
+                    lform.validate(data, function (err, errors) {
+                        if (err) {
+                            return console.error(err);
+                        }
+                        if (errors) {
+                            lform.update(errors, data, function (err) {
+                                if (err) {
+                                    return console.error(err);
+                                }
+                                signin.removeAttr('disabled');
+                            });
+                            return;
+                        }
                         lform.update(errors, data, function (err) {
                             if (err) {
                                 return console.error(err);
                             }
-                            signin.removeAttr('disabled');
-                        });
-                        return;
-                    }
-                    lform.update(errors, data, function (err) {
-                        if (err) {
-                            return console.error(err);
-                        }
-                        lform.create(data, function (err, data) {
-                            captcha.response(captchaId, function (err, captcha) {
+                            lform.create(data, function (err, errors, data) {
                                 if (err) {
                                     return console.error(err);
                                 }
-                                if (!captcha) {
+                                if (errors) {
+                                    lform.update(errors, data, function (err) {
+                                        if (err) {
+                                            return console.error(err);
+                                        }
+                                        signin.removeAttr('disabled');
+                                    });
                                     return;
                                 }
-                                authenticate(captcha, data.username, data.password, options);
+                                captcha.response(captchaId, function (err, captcha) {
+                                    if (err) {
+                                        return console.error(err);
+                                    }
+                                    if (!captcha) {
+                                        return;
+                                    }
+                                    authenticate(captcha, data.username, data.password, options);
+                                });
                             });
                         });
                     });
