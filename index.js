@@ -18,7 +18,7 @@ var configs = {
             if (!is.email(value)) {
                 return done(null, 'Please enter a valid email address');
             }
-            done();
+            done(null, null, value);
         },
         update: function (context, source, error, value, done) {
             $('input', source).val(value);
@@ -33,7 +33,7 @@ var configs = {
             if (!value) {
                 return done(null, 'Please enter your password');
             }
-            done();
+            done(null, null, value);
         },
         update: function (context, source, error, value, done) {
             $('input', source).val(value);
@@ -72,11 +72,11 @@ module.exports = function (ctx, sandbox, options, done) {
             }
             var signin = $('.accounts-signin .signin', elem);
             sandbox.on('click', '.accounts-signin .signin', function (e) {
-                lform.find(function (err, errors, data) {
+                lform.find(function (err, data) {
                     if (err) {
                         return console.error(err);
                     }
-                    lform.validate(data, function (err, errors) {
+                    lform.validate(data, function (err, errors, data) {
                         if (err) {
                             return console.error(err);
                         }
