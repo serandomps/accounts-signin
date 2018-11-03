@@ -106,14 +106,14 @@ module.exports = function (ctx, sandbox, options, done) {
                                     });
                                     return;
                                 }
-                                captcha.response(captchaId, function (err, captcha) {
+                                captcha.response(captchaId, function (err, xcaptcha) {
                                     if (err) {
                                         return console.error(err);
                                     }
-                                    if (!captcha) {
+                                    if (!xcaptcha) {
                                         return;
                                     }
-                                    authenticate(captcha, data.username, data.password, options);
+                                    authenticate(captcha, captchaId, xcaptcha, data.username, data.password, options);
                                 });
                             });
                         });
@@ -147,7 +147,7 @@ module.exports = function (ctx, sandbox, options, done) {
     });
 };
 
-var authenticate = function (captcha, username, password, options) {
+var authenticate = function (captcha, captchaId, xcaptcha, username, password, options) {
     $.ajax({
         method: 'POST',
         url: utils.resolve('accounts:///apis/v/tokens'),
@@ -159,7 +159,7 @@ var authenticate = function (captcha, username, password, options) {
             password: password,
         },
         headers: {
-            'X-Captcha': captcha
+            'X-Captcha': xcaptcha
         },
         contentType: 'application/x-www-form-urlencoded',
         dataType: 'json',
@@ -180,7 +180,9 @@ var authenticate = function (captcha, username, password, options) {
             });
         },
         error: function (xhr, status, err) {
-            serand.emit('user', 'login error', err || status || xhr);
+            captcha.reset(captchaId, function () {
+                serand.emit('user', 'login error', err || status || xhr);
+            });
         }
     });
 };
