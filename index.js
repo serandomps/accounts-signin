@@ -3,6 +3,9 @@ var serand = require('serand');
 var utils = require('utils');
 var captcha = require('captcha');
 var form = require('form');
+var auth = require('auth');
+var token = require('token');
+var redirect = serand.redirect;
 
 dust.loadSource(dust.compile(require('./template'), 'accounts-signin'));
 
@@ -113,7 +116,11 @@ module.exports = function (ctx, sandbox, options, done) {
                                     if (!xcaptcha) {
                                         return;
                                     }
-                                    authenticate(captcha, captchaId, xcaptcha, data.username, data.password, options);
+                                    authenticate(captcha, captchaId, xcaptcha, data.username, data.password, options, function (err) {
+                                        if (err) {
+                                            return console.error(err);
+                                        }
+                                    });
                                 });
                             });
                         });
@@ -122,8 +129,17 @@ module.exports = function (ctx, sandbox, options, done) {
                 return false;
             });
             sandbox.on('click', '.accounts-signin .facebook', function (e) {
-                options.type = 'facebook';
-                serand.emit('user', 'oauth', options);
+                serand.store('oauth', {
+                    type: 'facebook',
+                    clientId: options.clientId,
+                    location: options.location
+                });
+                auth.authenticator({
+                    type: 'facebook',
+                    location: utils.resolve('accounts:///auth/oauth')
+                }, function (err, uri) {
+                    redirect(uri);
+                });
                 return false;
             });
             done(null, {
@@ -147,7 +163,7 @@ module.exports = function (ctx, sandbox, options, done) {
     });
 };
 
-var authenticate = function (captcha, captchaId, xcaptcha, username, password, options) {
+var authenticate = function (captcha, captchaId, xcaptcha, username, password, options, done) {
     $.ajax({
         method: 'POST',
         url: utils.resolve('accounts:///apis/v/tokens'),
@@ -163,25 +179,29 @@ var authenticate = function (captcha, captchaId, xcaptcha, username, password, o
         },
         contentType: 'application/x-www-form-urlencoded',
         dataType: 'json',
-        success: function (token) {
+        success: function (tok) {
             var user = {
-                tid: token.id,
+                tid: tok.id,
                 username: username,
-                access: token.access_token,
-                refresh: token.refresh_token,
-                expires: token.expires_in
+                access: tok.access_token,
+                refresh: tok.refresh_token,
+                expires: tok.expires_in
             };
-            serand.emit('token', 'info', user.tid, user.access, function (err, token) {
+            token.findOne(user.tid, user.access, function (err, tok) {
                 if (err) {
-                    return serand.emit('user', 'login error', err);
+                    serand.emit('user', 'login error', err);
+                    return done(err);
                 }
-                user.has = token.has;
+                user.has = tok.has;
                 serand.emit('user', 'logged in', user, options);
+                done()
             });
         },
         error: function (xhr, status, err) {
             captcha.reset(captchaId, function () {
-                serand.emit('user', 'login error', err || status || xhr);
+                err = err || status || xhr;
+                serand.emit('user', 'login error', err);
+                done(err);
             });
         }
     });
