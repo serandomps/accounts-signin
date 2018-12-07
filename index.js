@@ -45,7 +45,8 @@ var configs = {
     },
 };
 
-module.exports = function (ctx, sandbox, options, done) {
+module.exports = function (ctx, container, options, done) {
+    var sandbox = container.sandbox;
     var home = options.location || '/';
     var signup = 'accounts:///signup';
     var suffix = '';
@@ -63,7 +64,7 @@ module.exports = function (ctx, sandbox, options, done) {
 
     var captchaId;
 
-    dust.render('accounts-signin', {home: home, signup: signup}, function (err, out) {
+    dust.render('accounts-signin', {id: container.id, home: home, signup: signup}, function (err, out) {
         if (err) {
             return done(err);
         }
@@ -73,8 +74,8 @@ module.exports = function (ctx, sandbox, options, done) {
             if (err) {
                 return done(err);
             }
-            var signin = $('.accounts-signin .signin', elem);
-            sandbox.on('click', '.accounts-signin .signin', function (e) {
+            var signin = $('.signin', elem);
+            sandbox.on('click', '.signin', function (e) {
                 lform.find(function (err, data) {
                     if (err) {
                         return console.error(err);
@@ -128,7 +129,7 @@ module.exports = function (ctx, sandbox, options, done) {
                 });
                 return false;
             });
-            sandbox.on('click', '.accounts-signin .facebook', function (e) {
+            sandbox.on('click', '.facebook', function (e) {
                 serand.store('oauth', {
                     type: 'facebook',
                     clientId: options.clientId,
@@ -144,12 +145,12 @@ module.exports = function (ctx, sandbox, options, done) {
             });
             done(null, {
                 clean: function () {
-                    $('.accounts-signin', sandbox).remove();
+                    $('.signin', sandbox).remove();
                 },
                 ready: function () {
                     captcha.render($('.captcha', sandbox), {
                         success: function () {
-                            $('.accounts-signin .signin', sandbox).removeAttr('disabled');
+                            $('.signin', sandbox).removeAttr('disabled');
                         }
                     }, function (err, id) {
                         if (err) {

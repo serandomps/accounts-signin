@@ -1,49 +1,83 @@
-<div class="row accounts-signin">
-    <div class="col-md-4"></div>
-    <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    <a class="panel-title" href="{home}">Home</a>
-                    <a class="panel-title pull-right" href="{signup}">Sign up</a>
-                </h3>
-            </div>
-            <div class="panel-body">
-                <form role="form">
-                    <div class="form-group source username has-feedback" data-name="username">
-                        <input type="text" class="form-control username" placeholder="Username"
-                               value="admin@serandives.com">
-                        <span class="form-control-feedback hidden"></span>
-                        <span class="help-block hidden"></span>
-                    </div>
-                    <div class="form-group source password has-feedback" data-name="password">
-                        <input type="password" class="form-control password" placeholder="Password">
-                        <span class="form-control-feedback hidden"></span>
-                        <span class="help-block hidden"></span>
-                    </div>
+<div class="row mt-md-5">
+    <div class="col-md"></div>
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form role="form" class="m-sm-4">
+                    <header class="text-center mb-7">
+                        <h2 class="mb-0">Welcome Back!</h2>
+                        <p>Login to manage your account.</p>
+                    </header>
 
-                    <div class="form-group source remember has-feedback" data-name="remember">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" class="remember">Remember me
-                            </label>
+                    <div class="source username form-group" data-name="username">
+                        <label class="sr-only" for="username-{id}">Email</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="username-label-{id}">
+                                  <span class="fas fa-user"></span>
+                                </span>
+                            </div>
+                            <input type="email" class="form-control" name="username" id="username-{id}"
+                                   placeholder="Username" aria-label="Username"
+                                   aria-describedby="username-label-{id}"
+                                   required>
                         </div>
+                        <div class="invalid-feedback"></div>
                     </div>
+                    <!-- End Form Group -->
+
+                    <!-- Form Group -->
+                    <div class="source password form-group" data-name="password">
+                        <label class="sr-only" for="password-{id}">Password</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="password-label-{id}">
+                                  <span class="fas fa-lock"></span>
+                                </span>
+                            </div>
+                            <input type="password" class="form-control" name="password" id="password-{id}"
+                                   placeholder="Password" aria-label="Password"
+                                   aria-describedby="password-label-{id}"
+                                   required>
+                        </div>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <!-- End Form Group -->
+
                     <div class="form-group">
                         <div class="captcha" data-size="normal"></div>
                     </div>
+
+                    <div class="mb-2">
+                        <button type="submit" class="signin btn btn-block btn-secondary" disabled>Sign in</button>
+                    </div>
+
+                    <div class="row mb-5">
+                        <div class="col-6">
+                            <span class="small text-muted">Do not have an account?</span>
+                            <a class="small" href="/signup"> Sign up</a>
+                        </div>
+
+                        <div class="col-6 text-right">
+                            <a class="small link-muted" href="/recover">Forgot password?</a>
+                        </div>
+                    </div>
+
+                    <!-- Login Buttons -->
+                    <div class="login d-flex">
+                        <a class="facebook btn btn-block border mr-1" href="#">
+                            <span class="fab fa-facebook-square mr-1"></span>
+                            Facebook
+                        </a>
+                        <a class="google btn btn-block border ml-1 mt-0" href="#">
+                            <span class="fab fa-google mr-1"></span>
+                            Google
+                        </a>
+                    </div>
+                    <!-- End Login Buttons -->
                 </form>
-            </div>
-            <div class="panel-footer">
-                <button type="submit" class="btn btn-default signin" disabled="disabled">Sign in</button>
-                <button type="submit" class="btn btn-default facebook pull-right">
-                    <i class="fab fa-2x fa-facebook-square" aria-hidden="true"></i>
-                </button>
-                <button type="submit" class="btn btn-default google pull-right">
-                    <i class="fab fa-2x fa-google-plus-square" aria-hidden="true"></i>
-                </button>
             </div>
         </div>
     </div>
-    <div class="col-md-4"></div>
+    <div class="col-md"></div>
 </div>
