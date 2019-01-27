@@ -76,6 +76,7 @@ module.exports = function (ctx, container, options, done) {
             }
             var signin = $('.signin', elem);
             sandbox.on('click', '.signin', function (e) {
+                $('.signin-error', sandbox).text('');
                 lform.find(function (err, data) {
                     if (err) {
                         return console.error(err);
@@ -119,7 +120,8 @@ module.exports = function (ctx, container, options, done) {
                                     }
                                     authenticate(captcha, captchaId, xcaptcha, data.username, data.password, options, function (err) {
                                         if (err) {
-                                            return console.error(err);
+                                            $('.signin-error', sandbox).text('Username or the password you entered is invalid');
+                                            signin.attr('disabled', 'disabled');
                                         }
                                     });
                                 });
@@ -145,7 +147,7 @@ module.exports = function (ctx, container, options, done) {
             });
             done(null, {
                 clean: function () {
-                    $('.signin', sandbox).remove();
+
                 },
                 ready: function () {
                     captcha.render($('.captcha', sandbox), {
